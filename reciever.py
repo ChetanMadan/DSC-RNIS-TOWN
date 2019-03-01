@@ -3,7 +3,7 @@
 import socket
 import sys
 
-from _thread import *
+from _thread import start_new_thread
 HOST = '127.0.0.1'
 PORT =8888
 
@@ -17,9 +17,7 @@ except socket.error as msg:
     sys.exit()
 
 print("bind complete")
-
 s.listen(5)
-
 print("socket listening")
 
 def client_thread(conn):
@@ -28,10 +26,15 @@ def client_thread(conn):
     while True:
         data = conn.recv(4096)
         data=data.decode()
-        reply = "data recd : "+ data
+
+        data = data.split(',')
+        useful = data[0][2:-1]
+        timestamp = data[1]
+
+        print ("use : ", useful)
+        print("time : ", timestamp)
         if not data or data=='disconnect':
             break
-        print(reply)
         #conn.sendall(bytes(reply, 'UTF-8'))
 
     conn.close()

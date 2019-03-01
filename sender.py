@@ -1,5 +1,6 @@
 
 import socket
+import time
 
 
 def client_program():
@@ -11,8 +12,9 @@ def client_program():
 
     message = input(" -> ")  # take input
 
-    while message.lower().strip() != 'bye':
-        s.send(bytes(message, 'UTF-8'))
+    while message[0].lower().strip() != 'bye':
+        mess = [message, time.time()]
+        s.send(bytes(str(mess), 'UTF-8'))
         #s.sendall(message.encode())  # send message
         #data = client_socket.recv(1024).decode()  # receive response
 
