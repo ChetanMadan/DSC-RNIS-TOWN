@@ -1,51 +1,77 @@
-
-
 import socket
 import sys
-
+import time
 from _thread import start_new_thread
-HOST = '127.0.0.1'
-PORT =8888
+import pickle
+import cv2
+recd=b""
 
-s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-try:
-    s.bind((HOST, PORT))
-
-except socket.error as msg:
-    print(msg)
-    sys.exit()
-
-print("bind complete")
-s.listen(5)
-print("socket listening")
+def find_fps(t):
+    return(time.time()-t)
 
 def client_thread(conn):
     print('client thread started')
     #conn.send(bytes(input("enter input : "), 'UTF-8'))
     while True:
-        data = conn.recv(4096)
-        data=data.decode()
+        data=b""
+        while True:
 
-        data = data.split(',')
-        useful = data[0][2:-1]
-        timestamp = data[1]
-
-        print ("use : ", useful)
-        print("time : ", timestamp)
-        if not data or data=='disconnect':
-            break
+            packet = conn.recv(4096)
+            if not packet: break
+            data+=packet
+        if not data: break
+        recd=pickle.loads(data)
+        print("DATA PRINTED !!!")
+        print(" ")
+        print(recd[0])
+        print("DATE")
+        print(recd[1])
+        
+        cv2.imshow("frame transmitted!", recd[0])
+        if cv2.waitKey(0)==ord('q'):
+            cv2.destroyAllWindows()
+        
         #conn.sendall(bytes(reply, 'UTF-8'))
-
-    conn.close()
     print("connection closed")
+    conn.close()
+
+    return recd
 
 
-while True:
-    conn, addr = s.accept()
-    print('connected to ', addr[0], " ", addr[1]) 
+def main():
+        
+    HOST = '127.0.0.1'
+    PORT =8888
+
+    s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
     try:
-        start_new_thread(client_thread(conn,))
-    except TypeError:
-        pass
-s.close()      
+        s.bind((HOST, PORT))
+
+    except socket.error as msg:
+        print(msg)
+        sys.exit()
+
+    print("bind complete")
+    s.listen(5)
+    print("socket listening")
+
+
+
+    while True:
+        conn, addr = s.accept()
+        print('connected to ', addr[0], " ", addr[1]) 
+        try:
+            msg = start_new_thread(client_thread(conn,))
+            cv2.imshow("transmitted!", recd[0])
+            if cv2.waitKey(0)==ord('q'):
+                cv2.destroyAllWindows()
+                break
+            print(msg)
+
+        except TypeError:
+            pass
+    s.close()      
+
+if __name__=='__main__':
+    main()
