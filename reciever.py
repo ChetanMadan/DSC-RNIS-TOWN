@@ -15,7 +15,6 @@ def client_thread(conn):
     while True:
         data=b""
         while True:
-
             packet = conn.recv(4096)
             if not packet: break
             data+=packet
@@ -28,7 +27,7 @@ def client_thread(conn):
         print(recd[1])
         
         cv2.imshow("frame transmitted!", recd[0])
-        if cv2.waitKey(0)==ord('q'):
+        if cv2.waitKey(1)==ord('q'):
             cv2.destroyAllWindows()
         
         #conn.sendall(bytes(reply, 'UTF-8'))
@@ -41,7 +40,7 @@ def client_thread(conn):
 def main():
         
     HOST = '127.0.0.1'
-    PORT =8888
+    PORT =9000
 
     s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)

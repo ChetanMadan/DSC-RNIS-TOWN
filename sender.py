@@ -33,25 +33,28 @@ if __name__ == '__main__':
 import socket
 import time
 import pickle
-
-def send(message):
+ret = False
+def conn_ini():
     host = '127.0.0.1'  # as both code is running on same pc
-    port = 8888  # socket server port number
-
+    port = 9000  # socket server port number
+    ret = True
     s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)  # instantiate
     s.connect((host, port))  # connect to the server
-
+    return s
+def send(message):
+    if not ret:
+        sender = conn_ini()
 
     mess = [message, time.time()]
-    s.send(pickle.dumps(mess))
+    sender.send(pickle.dumps(mess))
     #s.sendall(message.encode())  # send message
     #data = client_socket.recv(1024).decode()  # receive response
 
     #print('Received from server: ' + data)  # show in terminal    
     #print("sent : ", bytes(message, 'UTF-8'))
-    return s
+    return sender
 
 if __name__ == '__main__':
 
-    ret = send(input())
-    ret.close()
+    re = send(input())
+    re.close()
