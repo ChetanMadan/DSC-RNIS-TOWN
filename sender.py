@@ -21,7 +21,7 @@ def client_program():
         #print('Received from server: ' + data)  # show in terminal
 
         message = input(" -> ")  # again take input
-        
+
         print("sent : ", bytes(message, 'UTF-8'))
     s.close()  # close the connection
 
@@ -35,7 +35,7 @@ import time
 import pickle
 ret = False
 def conn_ini():
-    host = '127.0.0.1'  # as both code is running on same pc
+    host = '10.10.1.202'  # as both code is running on same pc
     port = 9000  # socket server port number
     ret = True
     s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)  # instantiate
@@ -50,11 +50,13 @@ def send(message):
     #s.sendall(message.encode())  # send message
     #data = client_socket.recv(1024).decode()  # receive response
 
-    #print('Received from server: ' + data)  # show in terminal    
+    #print('Received from server: ' + data)  # show in terminal
     #print("sent : ", bytes(message, 'UTF-8'))
     return sender
 
 if __name__ == '__main__':
-
-    re = send(input())
+    data = " "
+    while data[-1]!='q':
+        data = input("Enter data: ")
+        re = send(input("Enter data: "))
     re.close()

@@ -25,11 +25,11 @@ def client_thread(conn):
         print(recd[0])
         print("DATE")
         print(recd[1])
-        
+
         cv2.imshow("frame transmitted!", recd[0])
         if cv2.waitKey(1)==ord('q'):
             cv2.destroyAllWindows()
-        
+
         #conn.sendall(bytes(reply, 'UTF-8'))
     print("connection closed")
     conn.close()
@@ -38,8 +38,8 @@ def client_thread(conn):
 
 
 def main():
-        
-    HOST = '127.0.0.1'
+
+    HOST = '10.10.1.202'
     PORT =9000
 
     s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -59,7 +59,7 @@ def main():
 
     while True:
         conn, addr = s.accept()
-        print('connected to ', addr[0], " ", addr[1]) 
+        print('connected to ', addr[0], " ", addr[1])
         try:
             msg = start_new_thread(client_thread(conn,))
             cv2.imshow("transmitted!", recd[0])
@@ -70,7 +70,7 @@ def main():
 
         except TypeError:
             pass
-    s.close()      
+    s.close()
 
 if __name__=='__main__':
     main()
